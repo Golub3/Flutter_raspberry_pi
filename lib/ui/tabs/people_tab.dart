@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:contact_list/db/person.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../personPage.dart';
+
+enum OrderOptions { orderaz, orderza }
 
 class PeopleTab extends StatefulWidget {
   @override
@@ -99,6 +102,22 @@ class _PeopleTabState extends State<PeopleTab> {
                       padding: EdgeInsets.all(10.0),
                       child: TextButton(
                         child: Text(
+                          "Call",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        onPressed: () {
+                          launch("tel:${persons[index].phone}");
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: TextButton(
+                        child: Text(
                           "Edit",
                           style: TextStyle(
                             color: Colors.red,
@@ -153,6 +172,23 @@ class _PeopleTabState extends State<PeopleTab> {
     }
   }
 
+  void _orderList(OrderOptions result) {
+    switch (result) {
+      case OrderOptions.orderaz:
+        persons.sort((a, b) {
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
+        break;
+      case OrderOptions.orderza:
+        persons.sort((a, b) {
+          return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+        });
+        break;
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,6 +196,21 @@ class _PeopleTabState extends State<PeopleTab> {
         title: Text("Persons"),
         backgroundColor: Colors.red,
         centerTitle: true,
+        actions: <Widget>[
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                child: Text("A-Z"),
+                value: OrderOptions.orderaz,
+              ),
+              const PopupMenuItem<OrderOptions>(
+                child: Text("Z-A"),
+                value: OrderOptions.orderza,
+              )
+            ],
+            onSelected: _orderList,
+          )
+        ],
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(

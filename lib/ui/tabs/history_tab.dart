@@ -6,6 +6,9 @@ class HistoryTab extends StatefulWidget {
 }
 
 class _HistoryTabState extends State<HistoryTab> {
+  List<String> items =
+      List<String>.generate(1000, (counter) => "Story №$counter");
+
   @override
   void initState() {
     super.initState();
@@ -18,6 +21,14 @@ class _HistoryTabState extends State<HistoryTab> {
         title: Text("History"),
         backgroundColor: Colors.red,
         centerTitle: true,
+      ),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('${items[index]}'),
+          );
+        },
       ),
     );
   }
